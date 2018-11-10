@@ -1,7 +1,7 @@
 import random
 
 
-def randlist(start=0, stop=100, length=30):
+def randlist(start=0, stop=100, length=10):
     i = 0
     list_rand = []
     while i <= length:
