@@ -191,4 +191,72 @@ def attemptHackWithKeyLength(ciphertext, mostLikelyKeyLength):
             print()
 
 
-    
+    for indexes in itertools.product(range(NUM_MOST_FREQ_LETTERS),repeat=mostLikelyKeyLength):
+        # create a possible key from the letters in allFreqScores
+        possibleKey = ''
+        for i in range(mostLikelyKeyLength):
+            possibleKey += allFreqScores[i][indexes[i]][0]
+
+        if not SILENT_MODE:
+            print('Attempting with key: {0}'.format(possibleKey))
+
+        decryptedText = cipher.decryptMessage(possibleKey,ciphertextUp)
+
+        if detectEnglish.isEnglish(decryptedText):
+            # set the hacked ciphertext to original casing
+            origCase = []
+            for i in range(len(ciphertext)):
+                if ciphertext[i].isupper():
+                    origCase.append(decryptedText[i].upper())
+                else:
+                    origCase.append(decryptedText[i].lower())
+            decryptedText = ''.join(origCase)
+
+            # Check with user to see if the key has been found
+            print('Possible encryption hack with key {0}:'.format(possibleKey))
+            print(decryptedText[:200])
+            print()
+            print('Enter D for done , or just press Enter to continue hacking')
+            response = input('> ')
+
+            if response.strip().upper().startswith('D'):
+                return decryptedText
+
+    # No english-looking decrytion found, so return None.
+    return None
+
+def hackVigenere(ciphertext):
+    # first wee need kasiski Examination to figure out what the length of ciphertext would be
+    allLikelyKeyLengths = kasiskiExamination(ciphertext)
+    if not SILENT_MODE:
+        keyLengthStr = ''
+        for keyLength in allLikelyKeyLengths:
+            keyLengthStr += '{}'.format(keyLength)
+        print('Kasiski Examination results say the most lakely key lengths are: '+ keyLengthStr + '\n')
+
+    for keyLength in allLikelyKeyLengths:
+        if not SILENT_MODE:
+            print('Attempting hack with key length {0} ( {1} possible keys)...'.format(keyLength,NUM_MOST_FREQ_LETTERS ** keyLength))
+        hackedMessage = attemptHackWithKeyLength(ciphertext, keyLength)
+        if hackedMessage != None:
+            break
+
+
+    if hackedMessage == None:
+        if not SILENT_MODE:
+            print('Unable to hack message with likely key length by brute forcing....')
+
+        for keyLength in range(1,MAX_KEY_LENGTH + 1):
+            # dont re-check key lengths already tried from kasiski
+            if keyLength not in allLikelyKeyLengths:
+                if not SILENT_MODE:
+                    print('Attempting hack with key length %s (%s possible keys)...' % (keyLength, NUM_MOST_FREQ_LETTERS ** keyLength))
+
+                hackedMessage = attemptHackWithKeyLength(ciphertext,keyLength)
+
+                if hackedMessage != None:
+                    break
+    return hackedMessage
+
+if __name__ == '__main__':
+    main()
