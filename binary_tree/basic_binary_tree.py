@@ -11,7 +11,7 @@ class Node:
 
 
 def depth_of_tree(tree):
-    if tree in None:
+    if tree is None:
         return 0
     else:
         depth_l_tree = depth_of_tree(tree.left)
