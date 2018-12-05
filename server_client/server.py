@@ -1,6 +1,6 @@
 import socket
 
-HOST, PORT = '127.0.0.1', 1400
+HOST, PORT = '127.0.0.1', 1200
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)#refer to client.py
 s.bind((HOST, PORT))
