@@ -24,4 +24,4 @@ s.send('Hello World'.encode('ascii'))#in UDP use sendto()
 data = s.recv(1024)#in UDP use recvfrom()
 
 s.close()#end the connection
-print(repr(data.decode('ascii')))
+print(repr('server :'+data.decode('ascii')))
