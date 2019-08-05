@@ -1,6 +1,9 @@
 import sys
 import inspect
 
+from sheep import Sheep
+
+
 class Spare(object):
     '''
         This class will preserve the most fundamental works of 
