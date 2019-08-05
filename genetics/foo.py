@@ -23,4 +23,6 @@ class Container(Spare):
 
 if __name__ == "__main__":
     clsmembers = inspect.getmembers(sys.modules[__name__] , inspect.isclass)
-    print(clsmembers)
+    for clsname, obj in clsmembers:
+        print(clsname,': ')
+        print('\t',obj.__doc__)
