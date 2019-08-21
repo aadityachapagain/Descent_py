@@ -21,7 +21,7 @@ class Container(Spare):
     def __init__(self, obj, docs):
         self.cls = obj
         self.docs = docs
-        return super().__init__()
+        super().__init__()
 
 
 if __name__ == "__main__":
