@@ -28,6 +28,7 @@ def arrayManipulation(n, queries):
         arr[i[0] - 1] += i[2]
         if i[1] != len(arr):
             arr[i[1]] -= i[2]
+        print(arr)
     maxval = 0
     itt = 0
     for q in arr:
