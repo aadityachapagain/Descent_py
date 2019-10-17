@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import torch
 
 class TS_SS:
     """
@@ -51,3 +52,12 @@ class TS_SS:
 
     def __call__(self, vec1: np.ndarray, vec2: np.ndarray):
         return self.Triangle(vec1, vec2) * self.Sector(vec1, vec2)
+
+# Usage
+v1 = np.random.random_sample((6000, 80))
+v2 = np.random.random_sample((200, 80))
+similarity = TS_SS()
+print(similarity(v1,v2))
+
+# to convert to tensor
+torch.tensor(similarity(v1,v2))
