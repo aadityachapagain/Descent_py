@@ -18,7 +18,7 @@ Here, ANA occurs twice in BANANA. Hence, Kevin will get `2` Points.
 
 For better understanding, see the image below:
 
-![image src: HackerRank](https://github.com/aadityachapagain/Descent_py/tree/master/hackerrank/theMinionGame/image.png)
+![image src: HackerRank](https://github.com/UtsavRatna/Descent_py/blob/master/hackerrank/theMinionGame/image.PNG)
 
 Your task is to determine the winner of the game and their score.
 
