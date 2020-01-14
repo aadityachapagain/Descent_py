@@ -35,7 +35,13 @@ dataset = [[2.7810836,2.550537003,0],
 	[3.06407232,3.005305973,0],
 	[7.627531214,2.759262235,1],
 	[5.332441248,2.088626775,1],
-	[6.922596716,1.77106367,1],
+	[6.922596716,1.77106367,1],* **Adjective**
+* attract or tempt by offering pleasure or advantage.
+* Example:
+   -  a show which should entice a new audience into the theatre
+
+* **Similar**
+  -  temp, allure, lure, attract.
 	[8.675418651,-0.242068655,1],
 	[7.673756466,3.508563011,1]]
 prediction = predict_classification(dataset, dataset[0], 3)
