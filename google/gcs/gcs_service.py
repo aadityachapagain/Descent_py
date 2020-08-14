@@ -57,8 +57,8 @@ class GCP_Service(object):
     def upload_all(self, local_dir:str, bucket_dir:str):
         files = [f for f in listdir(local_dir) if isfile(join(local_dir, f))]
         for file in files: # TODO recursive upload
-            local_file = local_dir + file
-            blob = self.bucket.blob(bucket_dir + file)
+            local_file = os.path.join(local_dir,file)
+            blob = self.bucket.blob(os.path.join(bucket_dir,file))
             blob.upload_from_filename(local_file)
         logger.info(f'Uploaded {files} to "{self.bucket}" bucket.')
 
