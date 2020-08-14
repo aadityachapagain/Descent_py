@@ -75,6 +75,22 @@ class GCP_Service(object):
         blob.download_to_filename(dest_file)
         logger.info(f'{file_name} downloaded from bucket.')
         return dest_file
+    
+    def download_all(self, bucket_dir:str, local_dir:str):
+        print(bucket_dir, local_dir)
+        bucket_files = self.list_files(bucket_dir)
+        for b_file in bucket_files:
+            try:
+                blob = self.bucket.blob(b_file)
+                file_name = blob.name.replace(bucket_dir,'')[1:]
+                dest_file = os.path.join(local_dir, file_name)
+                if not os.path.isdir(os.path.dirname(dest_file)):
+                    os.makedirs(os.path.dirname(dest_file), exist_ok=True)
+                blob.download_to_filename(dest_file)
+                logger.info(f'{dest_file} downloaded from bucket.')
+            except:
+                print('raise exception')
+                continue
 
     def delete(self, bucket_filename:str):
         self.bucket.delete_blob(bucket_filename)
