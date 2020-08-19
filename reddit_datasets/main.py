@@ -19,7 +19,9 @@ import lzma
 import zstandard as zstd
 import io
 from langdetect import detect
+from unmark.main import unmark
 import re
+import traceback 
 
 parser = argparse.ArgumentParser(description='download reddit datasets from pushshift.io')
 parser.add_argument('--dpath', type=str,
@@ -46,30 +48,35 @@ def find_url(string):
     return [x[0] for x in url]
 
 def preprocess_handler(dpath: str):
-    logger.info(f"pre-processing {outfile}")
-    if dpath.endswith('.bz2'):
+    logger.info(f"pre-processing {dpath}")
+    if dpath.lower().endswith('.bz2'):
         read_bz2_dataset(dpath)
-    elif dpath.endswith('.xz'):
+    elif dpath.lower().endswith('.xz'):
         read_lzma_dataset(dpath)
-    elif dpath.endswith('.zst'):
+    elif dpath.lower().endswith('.zst'):
         read_zstandered_data(dpath)
     else:
-        pass
+        logger.info("File not supported ... ")
 
-    logger.info(f"Done preprocessing {outfile} to {''.join(path.split('.')[:-1]) +'.txt'}")
+    logger.info(f"Done preprocessing {dpath} to {''.join(dpath.split('.')[:-1]) +'.txt'}")
 
 def preprocess_text(data: dict):
-    # 1 convert markup to plaintext
+    # check if sumbission is over 18 or not
     if data['over_18']:
         return False
-    if data['']
     # convert markdown to plain text
     text = unmark(data['selftext'].strip())
 
     # check if there is any url or not
     if len(find_url(text)) > 0:
         return False
+    if text.strip() == '':
+        return False
+    if len(text.strip()) <= 5:
+        return False
     # check if text start with non-ASCII character
+    if text.strip().lower() == '[deleted]' or text.strip().lower() == '[removed]':
+        return False
     if ord(text[0]) > 128:
         return False
     # remove mulitple spaces into single space
@@ -84,7 +91,7 @@ def preprocess_text(data: dict):
 
 def read_bz2_dataset(path):
     new_path = ''.join(path.split('.')[:-1]) +'.txt'
-    with open(new_path, 'wb') as fw:
+    with open(new_path, 'w') as fw:
         with bz2.open(path) as fp:
             for line in fp:
                 try:
@@ -93,24 +100,27 @@ def read_bz2_dataset(path):
                     if line:
                         fw.write(line + '\n')
                 except:
-                    pass
+                    traceback.print_exc()
+                    logger.info(f'getting error at line  {line}')
+                    
 
 def read_lzma_dataset(path):
     new_path = ''.join(path.split('.')[:-1]) +'.txt'
-    with open(new_path, 'wb') as fw:
+    with open(new_path, 'w') as fw:
         with lzma.open(path) as compressed:
-            for line in compressed
+            for line in compressed:
                 try:
                     line = json.loads(line.decode("utf-8"))
                     line = preprocess_text(line)
                     if line:
                         fw.write(line + '\n')
                 except:
-                    pass
+                    traceback.print_exc()
+                    logger.info(f'getting error at line  {line}')
 
 def read_zstandered_data(path):
     new_path = ''.join(path.split('.')[:-1]) +'.txt'
-    with open(new_path, 'wb') as fw:
+    with open(new_path, 'w') as fw:
         with open(path, 'rb') as fh:
             dctx = zstd.ZstdDecompressor()
             stream_reader = dctx.stream_reader(fh)
@@ -123,7 +133,8 @@ def read_zstandered_data(path):
                     if line:
                         fw.write(line + '\n')
                 except:
-                    pass
+                    traceback.print_exc()
+                    logger.info(f'getting error at line  {line}')
 
 def download(url, path, fname, redownload=False, num_retries=5):
     """
@@ -317,7 +328,7 @@ if __name__ == "__main__":
             fd = DownloadableFile(
                 v['link'], k, None
             )
-            outfile = fd.download_file(dpath)
+            outfile = fd.download_file(args.dpath)
             preprocess_handler(outfile)
 
 
